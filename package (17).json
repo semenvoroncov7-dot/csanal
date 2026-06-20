@@ -1,0 +1,35 @@
+import { getAllTeams } from "@/data/mockData";
+import Link from "next/link";
+
+export default function PlayersPage() {
+  const teams = getAllTeams();
+  const allPlayers = teams.flatMap(t => t.players.map(p => ({ ...p, team: t.shortName, teamId: t.id, teamWR: t.worldRanking }))).sort((a, b) => b.rating - a.rating);
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-3xl font-black text-gradient">👤 Игроки</h1>
+      <div className="glass rounded-xl overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead><tr className="text-white/40 border-b border-white/10">
+            <th className="text-center py-2 px-2 w-10">#</th><th className="text-left py-2 px-2">Ник</th><th className="text-left py-2 px-2">Команда</th>
+            <th className="text-left py-2 px-2">Роль</th><th className="text-right py-2 px-2">Rating</th><th className="text-right py-2 px-2">K/D</th>
+            <th className="text-right py-2 px-2">ADR</th><th className="text-right py-2 px-2">Impact</th><th className="text-right py-2 px-2">HS%</th>
+          </tr></thead>
+          <tbody>{allPlayers.map((p, i) => (
+            <tr key={p.id} className="border-b border-white/5 hover:bg-white/5">
+              <td className="py-2 px-2 text-center text-white/30">{i + 1}</td>
+              <td className="py-2 px-2"><Link href={`/players/${p.id}`} className="font-bold text-white hover:text-purple-300">{p.nickname}</Link></td>
+              <td className="py-2 px-2"><Link href={`/teams/${p.teamId}`} className="text-blue-400 hover:text-blue-300 text-xs">{p.team} #{p.teamWR}</Link></td>
+              <td className="py-2 px-2 text-white/50 capitalize text-xs">{p.role}</td>
+              <td className="py-2 px-2 text-right font-bold text-green-400">{p.rating.toFixed(2)}</td>
+              <td className="py-2 px-2 text-right text-white/60">{p.kd.toFixed(2)}</td>
+              <td className="py-2 px-2 text-right text-white/60">{p.adr.toFixed(1)}</td>
+              <td className="py-2 px-2 text-right text-white/60">{p.impact.toFixed(2)}</td>
+              <td className="py-2 px-2 text-right text-white/60">{p.headshotPercentage}%</td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
